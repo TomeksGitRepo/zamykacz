@@ -16,6 +16,26 @@ app.get('/close', function(req, res) {
   spawn('shutdown', ['-h', 'now']);
 });
 
+function checkHour(checkedHour: number): boolean {
+  let timeNow = new Date();
+  let hourNow = timeNow.getHours();
+
+  return hourNow >= checkedHour;
+}
+
+function closeAtHour(hourToClose: number): void {
+  setInterval(() => {
+    console.log(
+      `Checking hour, result: ${hourToClose} is up ? ${checkHour(hourToClose)}`
+    );
+    if (checkHour(hourToClose)) {
+      spawn('shutdown', ['-h', 'now']); //Close if time is up to this hour
+    }
+  }, 300000);
+}
+
+closeAtHour(21); //close at 21 hour mark
+
 app.listen(3000, function() {
   console.log('Example app listening on port 3000!');
 });
